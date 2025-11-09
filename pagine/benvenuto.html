@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>Benvenuto</title>
+<style>
+	body{
+		background-color: black;
+	}
+	div#dottore{
+		margin: 10px auto;
+		width: 200px;
+		height: 196px;
+	}
+	div#messaggi{
+		background-color: white;
+		width: 760px;
+		height: 200px;
+		margin: 20px auto;
+		border-right:20px solid lightblue;
+		border-left:20px solid lightblue;
+		border-top:5px solid lightblue;
+		border-bottom:5px solid lightblue;
+		padding:20px;
+	}
+	div#altro{
+		margin: 10px auto;
+		width: 500px;
+		height: 250px;
+	}
+	h6{
+		color: green;
+		text-align: center;
+	}
+	img#pokemonz{
+		width: 140px;
+	}
+	
+
+</style>
+</head>
+<body>
+	<audio autoplay loop >
+		<source src="../audio/begin.mp3" type="audio/mpeg" id="musica">
+	</audio> 
+	<div id="dottore"><img src="../immagini/trfront.png"></img></div>
+	<div id="messaggi"></div>
+	<div id="altro"></div>
+	<h6>Premi ENTER per continuare</h6>
+	
+
+<script src="oggettoPokemon.js"></script>
+<script>
+	window.onload = function(){
+		var messaggio = document.getElementById("messaggi");
+		var altreDiv = document.getElementById("altro");
+		var html;
+		var htmlPersonaggi;
+		var nome ="";
+		var datiPersonaggio=new Array();
+		var usoMenu=false;
+		var controlloMappe=new Array();
+		//ISTANZIO I POKEMON
+		var pokemon = new Array();
+		pokemon[0] = new Pokemon("Charmender","Azione","Cannone di Fuoco","Fuoco Fatuo","Intimidazione","Fuoco",false,35,40,15,5); //CHARMENDER
+		pokemon[1] = new Pokemon("Squirtle","Azione","Pistolacqua","Surf","Tsunami","Acqua",false,35,25,15,50); //SQUIRTLE
+		pokemon[2] = new Pokemon("Bulbasaur","Azione","Assorbimento","Tronco","Fogliame","Erba",false,35,25,15,40); //BULBASAUR
+		pokemon[3] = new Pokemon("Pinsir","Azione","Colemorso","Ghigliottina","Forbice X","Coleottero",false,35,20,15,15);  //Pinsir
+		pokemon[4] = new Pokemon("Caterpie","Azione","Millebave","Sanguisuga","Botta","Coleottero",false,35,40,15,10); //CATERPIE
+		pokemon[5] = new Pokemon("Weedle","Azione","Millebave","Coleomorso","Taglio","Coleottero/Veleno",false,35,40,20,20); //WEEDLE
+		pokemon[6] = new Pokemon("Pidjey","Azione","Attacco d'ala","Schianto","Turbine","Normale/Volante",false,35,35,20,20); //PIDJEY
+		pokemon[7] = new Pokemon("Rattata","Azione","Pestone","Morso","Bottintesta","Normale",false,35,20,25,15); //RATTATA
+		pokemon[8] = new Pokemon("Spearow","Azione","Volo","Schianto","Turbine","Normale/Volante",false,35,10,20,20); //SPEAROW
+		pokemon[9] = new Pokemon("Ekans","Azione","Frustata","Presa","Taglio","Veleno",false,35,25,10,20); //EKANS
+		pokemon[10] = new Pokemon("Pikachu","Azione","Fulmine","Locomovolt","Codacciaio","Elettro",false,35,30,15,15); //PIKACHU
+		pokemon[11] = new Pokemon("Sandshrew","Azione","Fossa","Turbosabbia","Sassata","Terra",false,35,10,15,15); //SANDSHREW
+		pokemon[12] = new Pokemon("Nidorina","Azione","Graffio","Taglio","Velenospina","Veleno",false,35,35,20,35); //NIDORINA
+		pokemon[13] = new Pokemon("Clefairy","Azione","Pazienza","Ira","Uovobomba","Folletto",false,35,10,25,10); //CLEFAIRY
+		pokemon[14] = new Pokemon("Paras","Azione","Turbosabbia","Sassata","Fangosberla","Coleottero/Erba",false,35,15,15,10); //PARAS
+		pokemon[15] = new Pokemon("Diglett","Azione","Punte","Ossoclava","Fangosberla","Terra",false,35,20,20,10); //DIGLETT
+		pokemon[16] = new Pokemon("Psyduck","Azione","Rotolamento","Terrempesta","Magnitudo","Acqua",false,35,20,10,30); //PSYDUCK
+		pokemon[17] = new Pokemon("Vulpix","Azione","Magifuoco","Giornodisole","Ondacalda","Fuoco",false,35,5,5,10); //VULPIX
+		pokemon[18] = new Pokemon("Onix","Azione","Rocciotomba","Cadutamassi","Gemmoforza","Roccia/Terra",false,35,15,10,20); //ONIX
+		pokemon[19] = new Pokemon("Snorlax","Azione","Idrondata","Acquadisale","Idropulsar","Normale",false,35,10,10,20); //SNORLAX
+		//stampo messaggio benvenuto
+		html = "<p>Benvenuto nel mondo Pokemon!</p><p>Preparati ad un'avventura alla ricerca dei tuoi amici</p><p>Io sono il professore, tu come ti chiami?</p>";
+		messaggio.innerHTML = html;
+		
+		document.onkeydown = function(e){
+			//se ho premuto enter, vado avanti e propongo la scelta dei personaggi e del pokemon iniziale
+			if(e.key=="Enter"){
+				nome += prompt("Inserisci il tuo nome");
+				html = "<p>Ciao "+nome+"!!</p><p>Come prima cosa dovrai scegliere il tuo personaggio e il tuo pokemon, clicca su quello che vuoi";
+				
+				htmlPersonaggi = "<form name='selezionePersonaggio'><input type='radio' name='persona' value='Ragazzo'><img src='../immagini/trainer000.png'></img></input>";
+				htmlPersonaggi += "<input type='radio' name='persona' value='Ragazza'><img src='../immagini/trainer001.png'></img></input></form>";
+				
+				htmlPersonaggi += "<form name='selezionePokemon'><input type='radio' name='poke' value='Charmender'><img id='pokemonz' src='../immagini/Charmender.png'></img></input>";
+				htmlPersonaggi += "<input type='radio' name='poke' value='Squirtle'><img id='pokemonz' src='../immagini/Squirtle.png'></img></input>";
+				htmlPersonaggi += "<input type='radio' name='poke' value='Bulbasaur'><img id='pokemonz' src='../immagini/Bulbasaur.png'></img></input></form>";
+				
+				messaggio.innerHTML = html;
+				altreDiv.innerHTML = htmlPersonaggi;
+				// se premo ancora enter, dopo aver selezionato(altrimenti non avanza), stampo le scelte fatte 
+				document.onkeydown = function(e){
+					personaggio = document.selezionePersonaggio.persona.value;
+					pokemonScelto = document.selezionePokemon.poke.value;
+					if(personaggio!="" && pokemonScelto!="" && personaggio!="undefined" && personaggio!="undefined"){
+						if(e.key=="Enter"){
+							var personaggio;
+							var pokemonScelto;
+							
+							
+							htmlPersonaggi = "";
+							html = "<p>Perfetto, siamo pronti per iniziare!</p><p>Hai scelto "+personaggio+" e "+pokemonScelto+"</p>";
+							messaggio.innerHTML = html;
+							altreDiv.innerHTML = htmlPersonaggi;
+							datiPersonaggio[0]=nome;
+							datiPersonaggio[1]=personaggio;
+							datiPersonaggio[2]=pokemonScelto;
+						}
+						//con un successivo enter faccio entrare l'utente nel gioco
+						//scrivo i dati sul personaggio e i pokemon nel local storage
+						//definisco anche la mappa da cui partire, salvando sempre nel local storage
+						document.onkeydown = function(e){
+						if(e.key=="Enter"){
+							if(pokemonScelto == "Charmender") pokemon[0].setPossiede(true);
+							if(pokemonScelto == "Squirtle") pokemon[1].setPossiede(true);
+							if(pokemonScelto == "Bulbasaur") pokemon[2].setPossiede(true);
+							localStorage.clear();
+							localStorage.setItem("pokemon",JSON.stringify(pokemon));
+							localStorage.setItem("datiPersonaggio", JSON.stringify(datiPersonaggio));
+							controlloMappe[0]=usoMenu;
+							controlloMappe[1]="cittaPartenza";
+							localStorage.setItem("controlloMappe",JSON.stringify(controlloMappe));
+							location.href="schermataDiGioco.html";
+						}
+					}
+				}
+				}
+				
+				
+				
+				
+			}
+		}
+		
+		
+	}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dati allenatore</title>
+<style>
+	body{
+		background-color:black;
+	}
+	div#opzioni{
+		width:800px;
+		height:450px;
+		background-color:lightblue;
+		margin: 50px auto;
+		
+	}
+	table#dati{
+		width:700px;
+		height:400px;
+		padding:10px;
+		margin:auto;
+		font-size:15pt;
+		border:2px solid white;
+		border-radius:10px;
+	}
+	td.testo{
+		width:300px;
+		height:50px;
+		text-align:center;
+		font-size:17pt;
+	}
+	td.dato{
+		width:300px;
+		height:50px;
+		text-align:center;
+		color:red;
+	}
+	caption#titolo{
+		font-weight:bold;
+		font-size:20pt;
+	}
+</style>
+</head>
+<body>
+	<div id="opzioni">
+		<table id="dati">
+			<caption id="titolo">Impostazioni del gioco</caption>
+			<tr>
+				<td class="testo">Lingua<td class="dato">Italiano
+			<tr>
+				<td class="testo">Tasti Freccette<td class="dato">Movimento
+			<tr>
+				<td class="testo">Tasto Z<td class="dato">Tornare indietro dalle pagine del menu
+			<tr>
+				<td class="testo">Tasto X<td class="dato">Aprire e chiudere il menu
+			<tr>
+				<td class="testo">Suoni<td class="dato">On
+		</table>
+	</div>
+<script>
+	document.onkeydown=function(t){
+		gestisciTasto(t.keyCode);
+	
+	}
+	function gestisciTasto(tasto){
+		switch(tasto){
+			case 90:
+				location.href="schermataDiGioco.html";
+				break;
+		}
+	}
+</script>
+</body>
+</html>

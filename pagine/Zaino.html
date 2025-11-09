@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Zaino</title>
+<style>
+	body{
+		background-color:black;
+	}
+	div#contenitore{
+		width:800px;
+		height:500px;
+		background-color: #ffcc00;
+		position:absolute;
+		top:20px;
+		left:400px;
+	}
+	div#zaino{
+		width:750px;
+		height:450px;
+		background-color:white;
+		position:absolute;
+		top:25px;
+		left:25px;
+	}
+	div#elenco{
+		padding: 10px;
+		width:550px;
+		height:280px;
+		float:left;
+		background-color:white;
+		position:absolute;
+		top:0px;
+		left:0px;
+	}
+	div#immagine{
+		width:200px;
+		height:300px;
+		float:right;
+		background-color:white;
+	}
+	div#descrizione{
+		width:701px;
+		height:101px;
+		clear:both;
+		padding:20px;
+		background-color:white;
+		border-right:5px solid #ffcc00;
+		border-left:5px solid #ffcc00;
+		border-top:5px solid #ffcc00;
+		border-bottom:5px solid #ffcc00;
+	}
+	img.imgOggetto{
+		width:50px;
+		height:50px;
+	}
+	div#testo{
+		width:650px;
+		height:140;
+		float.left;
+	}
+	div#immagineOggetto{
+		width:50px;
+		height:100px;
+		float:right;
+	}
+	div.elemento{
+		width:200px;
+		height:30px;
+		padding:5px;
+	}
+	div#evidenzia{
+		width:200px;
+		height:26px;
+		border:2px solid red;
+		border-radius:5px;
+		position:absolute;
+	}
+	img#imgZaino{
+		display:block;
+		margin:75px auto;
+	}
+</style>
+</head>
+<body>
+	<div id="contenitore">
+		<div id="zaino">
+			<div id="elenco">
+				<div class="elemento">
+					3x Baccarancia
+				</div>
+				<div class="elemento">
+					10x Pozione
+				</div>
+				<div class="elemento">
+					20x UltraBall
+				</div>
+				<div id="evidenzia">
+				</div>
+			</div>
+			<div id="immagine">
+				<img id="imgZaino" src="../immagini/zaino.png">
+			</div>
+			<div id="descrizione">
+				<div id="testo">
+				</div>
+				<div id="immagineOggetto">
+					<img class="imgOggetto" id="imgOgg">
+				</div>
+			</div>
+		</div>
+	</div>
+<script src="oggettiUtili.js"></script>
+<script>
+	var testo=document.getElementById("testo");
+	var immOgg=document.getElementById("imgOgg");
+	var divEvidenzia=document.getElementById("evidenzia");
+	var b=new OggettiUtili("Baccarancia", "Restituisce 10 life points al pokemon");
+	var p=new OggettiUtili("pozione", "Restituisce life points al pokemon");
+	var u=new OggettiUtili("ultra ball", "Permette di catturare i pokemon con maggiore facilità");
+	var elementi=new Array();
+	var x,y;
+	var scelta;
+	elementi[0]=b;
+	elementi[1]=p;
+	elementi[2]=u;
+	x=10;
+	y=10;
+	posiziona(x,y);
+	
+	document.onkeydown=function(t){
+		gestisciTasto(t.keyCode);
+	}
+	function gestisciTasto(tasto){
+		switch(tasto){
+			case 38:
+				if(y!=10)
+					y-=40;
+				break;
+			case 40:
+				if(y!=80)
+					y+=40;
+				break;
+			case 13:
+				scelta=(y-10)/40;
+				riempiDescrizione(scelta);
+				break;
+			case 90:
+				location.href="schermataDiGioco.html";
+				break;
+		}
+		posiziona(x,y);
+	}
+	function posiziona(px,py){
+		divEvidenzia.style.top=py+"px";
+		divEvidenzia.style.left=px+"px";
+	}
+	function riempiDescrizione(c){
+		testo.innerHTML=elementi[c].descrizione;
+		immOgg.src="../immagini/"+elementi[c].nome+".png";
+	}
+</script>
+</body>
+</html>

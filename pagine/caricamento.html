@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>Caricamento</title>
+<style>
+	body{
+		background-color: black;
+	}
+	*{
+		margin: 0 auto;
+	}
+	
+	#container{
+		width: 480px;
+		height: 20px;
+		background-color: blue;
+		border-radius: 10px;
+	}
+	#barra{
+		width: 0px;
+		height: 20px;
+		background-color: yellow;
+		border-radius: 10px;
+	}
+	h1{
+		color: yellow;
+	}
+	
+
+</style>
+</head>
+<body>
+
+	<center><img src="../immagini/drake.gif"></img></center>
+	<br><br>
+	<center><h1>Caricamento...</h1></center>
+	<div id="container">
+		<div id="barra"></div>
+	</div>
+
+<script>
+
+	var barra = document.getElementById("barra");
+	var i=0;
+	var width = 0;
+	var id;
+	
+	var timer = setInterval("carica()",20);
+	
+	function carica()
+	{
+		i++;
+		barra.style.width = width + i + "px";
+		if(i == 480) {
+			clearInterval(timer);
+			id=setTimeout("location.href=\"benvenuto.html\"",1000);
+		}
+	}
+	
+</script>
+</body>
+</html>

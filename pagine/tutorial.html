@@ -1,0 +1,170 @@
+﻿<html>
+<head>
+<title>Tutorial</title>
+<style>
+	*{
+		font-size:20pt;
+	}
+	body{
+		background-color:black;
+	}
+	div#elenco{
+		margin:50px auto;
+		padding:5px;
+		width:900px;
+	}
+	div.tasto{
+		margin:20px auto;
+		clear:both;
+		width:800px;
+	}
+	div.immagini{
+		float:left;
+		width:100px;
+		height:100px;
+		border:2px solid red;
+		border-radius:10px;
+		margin-top:20px;
+	}
+	div.immagini img{
+		border-radius:10px;
+	}
+	div.testo{
+		width:550px;
+		padding:5px;
+		padding-top:35px;
+		float:right;
+		color:white;
+		vertical-align:center;
+	}
+	div#titolo{
+		color:red;
+		width:600px;
+		margin:50px auto;
+		font-size:50pt;
+		text-align:center;
+		font-wieght:bold;
+	}
+	div#tastiera{
+		margin:auto;
+		position:relative;
+		background-image:url('../immagini/icone/tastiera.gif');
+		width:800px;
+		height:317px;
+	}
+	div#selezione{
+		width:55px;
+		height:52px;
+		border:2px solid transparent;
+		border-radius:5px;
+		position:absolute;
+	}
+	div#indietro{
+		width:52px;
+		height:64px;
+		border:2px solid red;
+	}
+</style>
+</head>
+<body>
+	<div id="titolo">
+		Comandi di gioco
+	</div>
+	<div id="tastiera">
+		<div id="selezione"></div>
+	</div>
+	<div id="elenco">
+		<div class="tasto" >
+			<div class="immagini" >
+				<img src="../immagini/icone/frecce.jpg" id="frecce">
+			</div>
+			<div class="testo">	
+				Le frecce sono usate per muovere il personaggio scelto nelle rispettive direzioni
+			</div>
+		</div>
+		<div class="tasto" >
+			<div class="immagini" >
+				<img src="../immagini/icone/tastoX.png" id="tastoX">
+			</div>
+			<div class="testo">	
+				Il tasto X è usato per aprire un menu in cui potrai fare alcune operazioni, come la gestione dei tuoi pokemon o del tuo zaino
+			</div>
+		</div>
+		<div class="tasto" >
+			<div class="immagini" >
+				<img src="../immagini/icone/tastoA.png" id="tastoA">
+			</div>
+			<div class="testo">	
+				Il tasto A è usato principalmente per avanzare nei discorsi fra personaggi. Tuttavia è usato per anche per selezionare le mosse durante la battaglia o la caratteristiche del gioco.
+			</div>
+		</div>
+		<div class="tasto" >
+			<div class="immagini" >
+				<img src="../immagini/icone/tastoZ.png" id="tastoY">
+			</div>
+			<div class="testo">	
+				Il tasto Z è usato per tornare indietro dalle pagine secondarie.
+			</div>
+		</div>
+	</div>
+	
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	var idSelezione=document.getElementById("selezione");
+	var hSelezione=$("selezione").height();
+	var wSelezione=$("selezione").width();
+	
+	
+	//gestione del mouse over sopra tastiera
+	document.getElementById("frecce").onmouseenter=function(){
+		idSelezione.style.width="150px";
+		idSelezione.style.borderColor="red";
+		idSelezione.style.top=245+"px";
+		idSelezione.style.left=630+"px";
+		
+	}
+	document.getElementById("frecce").onmouseleave=function(){
+		idSelezione.style.width="50px";
+		idSelezione.style.borderColor="transparent";
+		idSelezione.style.top=0+"px";
+		idSelezione.style.left=0+"px";
+	}
+	//tasto X
+	document.getElementById("tastoX").onmouseenter=function (){
+		mostra(180,193);
+	}
+	document.getElementById("tastoX").onmouseleave=function (){
+		nascondi();
+	}
+	//tasto A
+	document.getElementById("tastoA").onmouseenter=function (){
+		mostra(105,140);
+	}
+	document.getElementById("tastoA").onmouseleave=function (){
+		nascondi();
+	}
+	//tasto Y
+	document.getElementById("tastoY").onmouseenter=function (){
+		mostra(348,90);
+	}
+	document.getElementById("tastoY").onmouseleave=function (){
+		nascondi();
+	}
+	function mostra(x, y){
+		idSelezione.style.height="50px";
+		idSelezione.style.width="50px";
+		idSelezione.style.borderColor="red";
+		idSelezione.style.top=y+"px";
+		idSelezione.style.left=x+"px";
+	}
+	function nascondi(){
+		idSelezione.style.height="52px";
+		idSelezione.style.width="55px";
+		idSelezione.style.borderColor="transparent";
+		idSelezione.style.top=0+"px";
+		idSelezione.style.left=0+"px";
+	}
+</script>
+</body>
+</html>

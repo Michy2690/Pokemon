@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pokemon Cemento Armato</title>
+<style>
+	*{
+		font-size:20pt;
+	}
+	body{
+		background-color:black;
+	}
+	div#logo{
+		width:500px;
+		height:240px;
+		margin:10px auto;
+	}
+	img#logoImg{
+		width:500px;
+		height:240px;
+	}
+	div#pika{
+		width:200px;
+		height:196px;
+		margin:10px auto;
+	}
+	img#pika{
+		width:200px;
+		height:196px;
+	}
+	div.testi{
+		width:500px;
+		margin:50px auto;
+		text-align:center;
+		padding:10px;
+		color:white;
+		border:2px solid white;
+		cursor: pointer;
+	}
+
+</style>
+</head>
+<body>
+	<audio autoplay loop >
+		<source src="../audio/Main menu.mp3" type="audio/mpeg" id="musica">
+	</audio>
+	<div id="logo">
+		<img id="logoImg" src="../immagini/logo.png">
+	</div>
+	<div id="pika">
+		<img src="../immagini/pikachuLogo.png" id="pika">
+	</div>
+	<div class="testi" id="gioca">
+		Nuova partita
+	</div>
+	<div class="testi" id="tutorial">
+		Tutorial
+	</div>
+	<div class="testi" id="caricaGioco">
+		Carica partita
+	</div>
+
+
+<script>
+	//gestione del cursore sopra ai div con i testi
+	var divGioca=document.getElementById("gioca");
+	var divTutorial=document.getElementById("tutorial");
+	var divCaricaGioco=document.getElementById("caricaGioco");
+	var tagMusica=new Array();
+	tagMusica=document.getElementById("musica");
+	//errore nel cambio suono
+	divGioca.onmouseenter=function(){
+		divGioca.style.color="yellow";
+		divGioca.style.borderColor="yellow";
+		tagMusica.src="../audio/Select.wav";
+		tagMusica.type="audio/wav";
+	}
+	divGioca.onmouseout=function(){
+		divGioca.style.color="white";
+		divGioca.style.borderColor="white";
+		tagMusica.src="../audio/Main Menu.mp3";
+		tagMusica.type="audio/mpeg";
+	}
+	//Tutorial
+	divTutorial.onmouseenter=function(){
+		divTutorial.style.color="yellow";
+		divTutorial.style.borderColor="yellow";
+		tagMusica.src="../audio/Select.wav";
+		tagMusica.type="audio/wav";
+	}
+	divTutorial.onmouseout=function(){
+		divTutorial.style.color="white";
+		divTutorial.style.borderColor="white";
+		tagMusica.src="../audio/Main Menu.mp3";
+		tagMusica.type="audio/mpeg";
+	}
+	//gestione del click su div dei testi
+	divGioca.onclick=function(){
+		location.href="caricamento.html";
+	}
+	divCaricaGioco.onclick=function(){
+		location.href="salvataggi.html";
+	}
+	divTutorial.onclick=function(){
+		location.href="tutorial.html";
+	}
+</script>
+</body>
+</html>

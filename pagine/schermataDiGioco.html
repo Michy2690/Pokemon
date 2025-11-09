@@ -1,0 +1,367 @@
+﻿<html>
+<head>
+<title>Poviglio</title>
+<style>
+	body{
+		background-color: black;
+	}
+	#mappa{
+		background-image: url("../immagini/cittaPartenza.png");
+		width: 800px;
+		height: 528px;
+		margin: 20px auto;
+		position:relative;
+		background-repeat:no-repeat
+	}
+	#messaggio{
+		background-color: white;
+		width: 760px;
+		height: 200px;
+		margin: 20px auto;
+		border-right:20px solid lightblue;
+		border-left:20px solid lightblue;
+		border-top:5px solid lightblue;
+		border-bottom:5px solid lightblue;
+		padding:20px;
+	}
+
+</style>
+</head>
+<body>
+	<audio autoplay loop id="musica" >
+		
+	</audio>
+	<div id="mappa"></div>
+	<div id="messaggio"></div>
+<script src="oggettoPersonaggio.js"></script>
+<script src="menu.js"></script>
+<script src="oggettoMappe.js"></script>
+<script src="mappaCittaPartenza.js"></script>
+<script src="mappaCittaCedolan.js"></script>
+<script src="mappaRoute1.js"></script>
+<script src="mappaRoute8.js"></script>
+<script src="mappaSafari.js"></script>
+<script src="mappaSafariCheckIn.js"></script>
+<script src="mappaSafariZone.js"></script>
+<script src="mappaPianoSopra.js"></script>
+<script src="mappaPianoSotto.js"></script>
+<script src="mappaPokeCenter.js"></script>
+<script src="oggettoMessaggi.js"></script>
+<script src="oggettoPersonaggiEsterni.js"></script>
+<script src="oggettoZoneErba.js"></script>
+<script>
+	var suono=document.getElementById("musica");
+	var div=document.getElementById("mappa");
+	var divMessaggi=document.getElementById("messaggio");
+	var x,y,k=0;
+	var sopra=true,sotto=true;
+	var sinistra=true,destra=true;
+	var possibiliScelte=new Array();
+	var carica=false;				//variabile per dire se scelta è fra quelle che servono a caricare nuova pagina.
+	var scelta="chiuso",scambia;
+	var mappaUtilizzata;
+	var movimento;
+	var mess;
+	var usoMenu=false;				//serve per dire se il menu è aperto oppure no 
+	var controlloMappe=new Array();	//serve per salvare la mappa nel local storage
+	var messaggi= new Messaggi();	//oggetto esterno per gestire messaggi
+	var datiPersonaggio=JSON.parse(localStorage.getItem("datiPersonaggio"));	//serve per leggere dati del personaggio dal local storage
+	var p=new Personaggio(datiPersonaggio[1],"Squirtle",190,190,div);			//oggetto per gestire personaggio
+	var m=new Menu(false,div);													//oggetto del menu
+	m.crea();																	//crea menu
+	var mappa=new Mappe();														//oggetto per gestire mappe e cambio mappa
+	var MCP=new MappaCittaPartenza();
+	var MCC=new MappaCittaCedolan();
+	var MR1=new MappaRoute1();
+	var MR8=new MappaRoute8();
+	var MS=new MappaSafari();
+	var MSC=new MappaSafariCheckIn();
+	var MSZ=new MappaSafariZone();
+	var MPS=new MappaPianoSu();
+	var MPG=new MappaPianoSotto();
+	var MPC=new MappaPokeCenter();
+	var mappe={																	//oggetto per richiamare tutte le mappe, tramite uan variabile mappa utilizzata 
+		cittaPartenza:MCP,														//ogni proprietà contiene puntatore a variabile che rappresenta oggetto esterno
+		cittaCedolan:MCC,
+		Route1:MR1,
+		Route8:MR8,
+		safari:MS,
+		SafariCheckIn:MSC,
+		safariZone:MSZ,
+		pianoSu:MPS,
+		pianoSotto:MPG,
+		pokeCenter:MPC
+	};
+	var pers1=new PersonaggioEsterno("GiacomoCedolan",290,348,div);				//personaggio esterno 
+	var pers2=new PersonaggioEsterno("mamma",63,241,div);						//personaggio esterno 
+	var personaggi={															//oggetto per gestire personaggi esterni
+		cittaCedolan: pers1,
+		pianoSotto: pers2
+	};
+	var zoneErba=new ZoneErba();												//oggetto per gestire zona d erba
+	var contErba=0,zonaPrec=0,numeroZona;										//contatore per erba, zona precedente da memorizzare 
+	var paginaBattaglia;														//puntatore a pagina battaglia aperta
+	var salva;																	//boolean con true per dire che stiamo salvando, e false no
+	mappaUtilizzata=mappa.partenza();											//selezionare mappa 										
+	selezionaMappa();
+	document.onkeydown=function(e){
+		suono.play();															//far partire suono
+		sopra=true;																//4 variabili boolean se true puo andare, se false blocco movimento
+		sinistra=true;
+		sotto=true;
+		destra=true;
+		scelta=m.gestisci(e.keyCode);											//gestire opzione menu, e restituisci aperto o chiuso, oppure la scelta selezionata
+		if(scelta=="chiuso"){
+			x=p.restituisciX();
+			y=p.restituisciY();
+			movimento=mappe[mappaUtilizzata].confronta(x,y,e.keyCode);			//serve per richiamare controllo della posizione del personaggio
+			// a seconda di quello che restituisce metto a false la variabile corrispondente al valore restituito
+			if(movimento=="sx"){
+				sinistra=false;
+				destra=true;
+				sopra=true;
+				sotto=true;
+			}
+			if(movimento=="dx"){
+				sinistra=true;
+				destra=false;
+				sopra=true;
+				sotto=true;
+			}
+			if(movimento=="su"){
+				sinistra=true;
+				destra=true;
+				sopra=false;
+				sotto=true;
+			}
+			if(movimento=="giu"){
+				sinistra=true;
+				destra=true;
+				sopra=true;
+				sotto=false;
+			}
+			//se cambio mappa tutto false, e richiamo i metodi per posizionare il personaggio nella nuova mappa
+			if(movimento=="cambiaSu"){
+				mappaUtilizzata=mappa.cambioMappa("su");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("su");
+				y=mappe[mappaUtilizzata].partenzaY("su");
+				p.specificaPosizione(x,y);
+			}
+			//controllo per far sparire il personaggio se cambio mappa
+			if(movimento=="cambiaGiu"){
+				if(mappaUtilizzata=="cittaCedolan")
+					personaggi[mappaUtilizzata].nascondi();
+				mappaUtilizzata=mappa.cambioMappa("giu");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("giu");
+				y=mappe[mappaUtilizzata].partenzaY("giu");
+				p.specificaPosizione(x,y);
+			}
+			if(movimento=="cambiaSx"){
+				mappaUtilizzata=mappa.cambioMappa("sx");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("sx");
+				y=mappe[mappaUtilizzata].partenzaY("sx");
+				p.specificaPosizione(x,y);
+			}
+			if(movimento=="cambiaDx"){
+				mappaUtilizzata=mappa.cambioMappa("dx");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("dx");
+				y=mappe[mappaUtilizzata].partenzaY("dx");
+				p.specificaPosizione(x,y);
+			}
+			if(movimento=="cambiaCasa"){
+				if(mappaUtilizzata=="cittaCedolan" || mappaUtilizzata=="pianoSotto")
+					personaggi[mappaUtilizzata].nascondi();
+				mappaUtilizzata=mappa.cambioMappa("casa");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("casa");
+				y=mappe[mappaUtilizzata].partenzaY("casa");
+				p.specificaPosizione(x,y);
+			}
+			if(movimento=="cambiaPokeCenter"){
+				mappaUtilizzata=mappa.cambioMappa("pokeCenter");
+				controllaMappa();
+				selezionaMappa();
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				x=mappe[mappaUtilizzata].partenzaX("pokeCenter");
+				y=mappe[mappaUtilizzata].partenzaY("pokeCenter");
+				p.specificaPosizione(x,y);
+			}
+			//se restituito cosi, richiamo oggetto messaggi esterno e prendo messaggio 
+			if(movimento=="messaggio"){
+				mess=messaggi.restituisciMessaggio(mappaUtilizzata);
+				divMessaggi.innerHTML=mess;
+				setTimeout(svuotaDivMessaggi,3000);
+			}
+			//faccio apparire il personaggio esterno
+			if(movimento=="personaggi"){
+				x=p.restituisciX();
+				personaggi[mappaUtilizzata].scorri(x);
+				mess=messaggi.restituisciMessaggio(mappaUtilizzata);
+				divMessaggi.innerHTML=mess;
+				setTimeout(svuotaDivMessaggi,3000);
+				personaggi[mappaUtilizzata].scorri(x);
+			}
+			//gestire erba, in più boolean messe a false se necessario
+			if(movimento=="erba"){
+				gestisciErba();
+			}
+			if(movimento=="erbaSu"){
+				sinistra=true;
+				destra=true;
+				sopra=false;
+				sotto=true;
+				gestisciErba();
+			}
+			if(movimento=="erbaGiu"){
+				sinistra=true;
+				destra=true;
+				sopra=true;
+				sotto=false;
+				gestisciErba();
+			}
+			if(movimento=="erbaSx"){
+				sinistra=false;
+				destra=true;
+				sopra=true;
+				sotto=true;
+				gestisciErba();
+			}
+			if(movimento=="erbaDx"){
+				sinistra=true;
+				destra=false;
+				sopra=true;
+				sotto=true;
+				gestisciErba();
+			}
+			p.muovi(e.keyCode,sinistra,destra,sopra,sotto);				//movimento del personaggio 
+		}
+		else{
+			//gestione menu, se schiaccia salva nel local storage-> visibile se si riapre tutto il gioco dall'inizio.
+			if(scelta=="Salva"){
+				usoMenu=true;
+				salva=true;
+				sinistra=false;
+				destra=false;
+				sopra=false;
+				sotto=false;
+				mess=messaggi.restituisciMessaggio("salva");
+				divMessaggi.innerHTML=mess;
+				controllaMappa();
+				setTimeout(fineSalvataggio,5000);
+				
+			}
+			else{
+				//apre la pagina corrispondente alla scelta
+				carica=m.apri(scelta);
+				if(carica){
+					usoMenu=true;
+					salva=false;
+					controllaMappa();
+					carica=false;
+					scambia=scelta;
+					scelta="aperto"
+					location.href=scambia+".html";
+				}
+			}
+				
+		}
+	}
+	//cambia immagine
+	document.onkeyup=function(e){
+		if(scelta=="chiuso")
+			p.changeImg(e.keyCode);
+	}
+	//selezionare mappa, dopo aver letto local storage 
+	function selezionaMappa(){
+		var leggiMappa=JSON.parse(localStorage.getItem("controlloMappe"));
+		//se usoMenu =true, carico la mappa salvata nel local storage
+		if(leggiMappa[0]|| leggiMappa[4]){
+			div.style.backgroundImage="url(\"../immagini/"+leggiMappa[1]+".png\")";
+			usoMenu=false;
+			p.specificaPosizione(leggiMappa[2], leggiMappa[3]);
+			mappaUtilizzata=leggiMappa[1];
+		}
+		else
+			div.style.backgroundImage="url(\"../immagini/"+mappaUtilizzata+".png\")";
+		//mappa Cedolan grande, devo gestire background position 
+		if(mappaUtilizzata=="cittaCedolan")
+			div.style.backgroundPosition=" 0px -327px";
+		else
+			div.style.backgroundPosition=" 0px 0px";
+		if(mappaUtilizzata=="cittaCedolan" || mappaUtilizzata=="pianoSotto")
+			personaggi[mappaUtilizzata].mostra();
+		//aggiorno audio 
+		suono.innerHTML="<source src=\"../audio/"+mappe[mappaUtilizzata].sound+".mp3\" type=\"audio/mpeg\">";
+		suono.load();
+	}
+	//svuota messaggi
+	function svuotaDivMessaggi(){
+		divMessaggi.innerHTML="";
+	}
+	//salva nel local storage la mappa 
+	function controllaMappa(){
+		controlloMappe[0]=usoMenu;
+		controlloMappe[1]=mappaUtilizzata;
+		controlloMappe[2]=p.restituisciX();
+		controlloMappe[3]=p.restituisciY();
+		controlloMappe[4]=salva;
+		localStorage.setItem("controlloMappe",JSON.stringify(controlloMappe));
+	}
+	//serve per gestire erba, se numero zona = zona Precedente per 30 volte di fila, allora apro battaglia.
+	function gestisciErba(){
+		x=p.restituisciX();
+		y=p.restituisciY();
+		numeroZona=zoneErba.controlla(x,y);
+		if(zonaPrec==numeroZona){
+			if(contErba==30){
+				paginaBattaglia=open();
+				suono.pause();
+				paginaBattaglia.location.href="battaglia.html";
+				contErba=0;
+			}
+			contErba++;
+			
+		}
+		zonaPrec=numeroZona;
+	}
+	//funzione che termina il salvataggio
+	function fineSalvataggio(){
+		mess=messaggi.restituisciMessaggio("salvataggioCompletato");
+		divMessaggi.innerHTML=mess;
+		setTimeout(svuotaDivMessaggi,3000);
+	}
+</script>
+</body>
+</html>

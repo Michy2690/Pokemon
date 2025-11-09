@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GestisciPokemon</title>
+<style>
+	body{
+		background-color:black;
+	}
+	div#contenitore{
+		width:800px;
+		height:630px;
+		background-color:blue;
+		position:absolute;
+		left:400px;
+	}
+	div.divPokemon{
+		width:370px;
+		height:180px;
+		float:left;
+		padding:10px;
+		background-color:lightblue;
+		margin:5px;
+	}
+	div.immagini{
+		width:100px;
+		height:100px;
+		float:left;
+	}
+	img.immag{
+		width:100px;
+		height:100px;
+	}
+	div.dati{
+		width:250px;
+		height:150px;
+		float:right;
+	}
+	td.vita{
+		background-color:green;
+		width:200px;
+		height:30px;
+	}
+	p.parNome{
+		text-align:center;
+		font-weight:bold;
+		font-size:18pt;
+	}
+	div#evidenzia{
+		width:382px;
+		height:195px;
+		border:4px solid red;
+		position:absolute;
+		top:5px;
+		left:5px;
+	}
+	#messaggio{
+		background-color: white;
+		width: 760px;
+		height: 200px;
+		border-right:20px solid lightblue;
+		border-left:20px solid lightblue;
+		border-top:5px solid lightblue;
+		border-bottom:5px solid lightblue;
+		padding:20px;
+		position:absolute;
+		top:650px;
+		left:400px;
+	}
+</style>
+</head>
+<body>
+	<div id="contenitore">
+		<div class="divPokemon" id="sottoDiv1">
+			<div class="immagini">
+				<img id="img1" class="immag">
+			</div>
+			<div class="dati" id="dati1">
+			</div>
+		</div>
+		<div class="divPokemon" id="sottoDiv2">
+			<div class="immagini">
+				<img id="img2" class="immag">
+			</div>
+			<div class="dati" id="dati2">
+			</div>
+		</div>
+		<div class="divPokemon" id="sottoDiv3">
+			<div class="immagini">
+				<img id="img3" class="immag">
+			</div>
+			<div class="dati" id="dati3">
+			</div>
+		</div>
+		<div class="divPokemon" id="sottoDiv4">
+			<div class="immagini">
+				<img id="img4" class="immag">
+			</div>
+			<div class="dati" id="dati4">
+			</div>
+		</div>
+		<div class="divPokemon" id="sottoDiv5">
+			<div class="immagini">
+				<img id="img5" class="immag">
+			</div>
+			<div class="dati" id="dati5">
+			</div>
+		</div>
+		<div class="divPokemon" id="sottoDiv6">
+			<div class="immagini">
+				<img id="img6" class="immag">
+			</div>
+			<div class="dati" id="dati6">
+			</div>
+		</div>
+		<div id="evidenzia">
+		</div>
+	</div>
+	<div id="messaggio"></div>
+<script src="oggettoPokemon.js"></script>
+<script>
+	var pokeTrovati=new Array();
+	var controllo,scelta;
+	var poke = JSON.parse(localStorage.getItem("pokemon"));
+	var divEvidenzia=document.getElementById("evidenzia");
+	var divMessaggio=document.getElementById("messaggio");
+	var x=5,y=5;
+	var n;
+	pokemonTrovati();
+	riempiDiv();
+	document.onkeydown=function(t){
+		gestisciTasto(t.keyCode);
+	
+	}
+	// prende i primi 6 pokemon con trovato= true e li prepara per metterli nel div
+	function pokemonTrovati(){
+		k=1;
+		for(i=0;i<20;i++){
+			controllo=poke[i].possiede;
+			if(controllo){
+				if(k<=6){
+					pokeTrovati[k]=poke[i];
+					k++;
+					n=k;
+				}
+				else
+					i=20;
+			}
+		}
+	}
+	//riempe il div con immagine pokemon, punti vita e nome, e lo posiziona nei div
+	function riempiDiv(){
+		var nome;
+		for(k=1;k<n;k++){
+			nome=pokeTrovati[k].nome;
+			document.getElementById("img"+k).src="../immagini/"+nome+".png";
+			document.getElementById("dati"+k).innerHTML="<p class=\"parNome\">"+nome+"<\/p><table><caption>Life Point 400/400<\/caption><tr><td class=\"vita\"><\/table>";
+			
+		}
+		posiziona(x,y);
+	}
+	//gestisce tasti
+	//frecce per muoversi suoi vari pokemon
+	// enter per selezionare le operazioni da fare, con opportuni controlli sull'input da prompt
+	function gestisciTasto(tasto){
+		switch(tasto){
+			case 37:
+				if(x!=5)
+					x-=399;
+				break;
+			case 39:
+				if(x!=404)
+					x+=399;
+				break;
+			case 38:
+				if(y!=5)
+					y-=208;
+				break;
+			case 40:
+				if(y!=421)
+					y+=208;
+				break;
+			case 13:
+				scelta=restituisci(x,y);
+				var errore=true;
+				var opzione=prompt("Vuoi spostare il pokemon o vedere le mosse?(sposta/mosse)");
+				do{
+					errore=true;
+					if(opzione!="sposta" && opzione!="mosse")
+						errore=false;
+					if(!errore)
+						opzione=prompt("Errore!\nVuoi spostare il pokemon o vedere le mosse?(sposta/mosse)");
+				}while(!errore);
+				if(opzione=="mosse")
+					stampaMosse(scelta);
+				else
+					scambiaPokemon(scelta);
+				break;
+			case 90:
+				location.href="schermataDiGioco.html";
+				break;
+		}
+		posiziona(x,y);
+	}
+	function posiziona(px,py){
+		divEvidenzia.style.top=py+"px";
+		divEvidenzia.style.left=px+"px";
+	}
+	//restituisce lla scelta del pokemon da analizzare, considerando width e height dei vari div
+	function restituisci(px,py){
+		var ym=(py-5)/208;
+		var xm=(px-5)/399;
+		if(ym==0){
+			if(xm==0)
+				return 1;
+			return 2;
+		}
+		if(ym==1){
+			if(xm==0)
+				return 3;
+			return 4;
+		}
+		if(ym==2){
+			if(xm==0)
+				return 5;
+			return 6;
+		}
+	}
+	//elenco mosse
+	function stampaMosse(scelta){
+		divMessaggio.innerHTML="Mossa 1: "+pokeTrovati[scelta].mosse[0]+"<br>Mossa 2: "+pokeTrovati[scelta].mosse[1]+"<br>Mossa 3: "+pokeTrovati[scelta].mosse[2]+"<br>Mossa 4: "+pokeTrovati[scelta].mosse[3];
+	}
+	//scambia due pokemon nella posizione
+	function scambiaPokemon(scelta){
+		var pos=prompt("In che posizione vuoi metterlo? ");
+		var errore=true;
+		do{
+			errore=true;
+			if(pos<1 || pos>n)
+				errore=false;
+			if(!errore)
+				pos=prompt("Errore!\nIn che posizione vuoi metterlo?");
+		}while(!errore);
+		nome=pokeTrovati[scelta].nome;
+		document.getElementById("img"+pos).src="../immagini/"+nome+".png";
+		document.getElementById("dati"+pos).innerHTML="<p class=\"parNome\">"+nome+"<\/p><table><caption>Life Point 400/400<\/caption><tr><td class=\"vita\"><\/table>";
+		nome=pokeTrovati[pos].nome;
+		document.getElementById("img"+scelta).src="../immagini/"+nome+".png";
+		document.getElementById("dati"+scelta).innerHTML="<p class=\"parNome\">"+nome+"<\/p><table><caption>Life Point 400/400<\/caption><tr><td class=\"vita\"><\/table>";
+	}
+</script>
+</body>
+</html>

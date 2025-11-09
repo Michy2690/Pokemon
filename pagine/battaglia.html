@@ -1,0 +1,403 @@
+<html>
+<head>
+<title>Battaglia</title>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+	body{
+		background-color: black;
+	}
+	div#container{
+		width: 1000px;
+		height: 520px;
+		background: url(../immagini/battlebgField.png) no-repeat;
+		margin: 0 auto;
+	}
+	#btn1,#btn2,#btn3,#btn4{
+		width: 200px;
+		height: 80px;
+		
+	}
+	button{
+		border-radius: 4px;
+	}
+	
+	table{
+		position: relative;
+	}
+	table#opzioni{
+		margin: 0 auto;
+	}
+	td#LPAvversario{
+		
+		width: 400px;
+		height: 200px;
+		
+	}
+	td#Utente{
+		width: 400px;
+		height: 200px;
+	}
+	td#Avversario{
+		background: no-repeat;
+		width: 400px;
+		height: 200px;
+	}
+	td#LPUtente{
+		width: 400px;
+		height: 200px;
+		
+	}
+	td#Mosse,#dialogo{
+		width: 500px;
+		height: 200px;
+		background-color: white;
+		padding:10px;
+		
+	}
+	td#spazio{
+		width: 200px;
+		height: 100px;
+		background-color: transparent;
+	}
+	
+	table#LPUt,table#LPAvv{
+		vertical-align: center;
+		margin: 0 auto;
+		background-color: white;
+		width: 200px;
+		height: 10px;
+	}
+	div#PtiVita,div#PtiVitaA{
+		width: 200px;
+		height: 10px;
+		vertical-align: center;
+		margin: 0 auto;
+		background-color: green;
+	}
+	
+	div#dialogBox{
+		display:none;
+		width: 307px;
+	}
+	div#slidePersonaggio{
+		width: 130px;
+		height: 200px;
+		background: url(../immagini/trback000.png) no-repeat;
+		background-position: 0px 0px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+<body>
+
+	<audio autoplay loop >
+		<source src="../audio/GSC Battle.mp3" type="audio/mpeg" id="musica">
+	</audio>
+<div id="dialogBox" title="Scegli il tuo pokemon">
+
+</div>
+<div id="container">
+	<table id="scenario">
+		<tr>
+			<td id="LPAvversario">
+				<table id="LPAvv">
+				<caption>Life Points: 400/400</caption>
+					<tr>
+						<td><div id="PtiVitaA">
+							
+						</div></td>
+					</tr>
+				</table>
+			</td>
+			<td id="spazio"></td>
+			<td id="Avversario"></td>
+		</tr>
+		<tr><td id="spazio"></td><td id="spazio"></td><td id="spazio"></td></tr>
+		<tr>
+			<td id="Utente"><div id="slidePersonaggio"></div></td>
+			<td id="spazio"></td>
+			<td id="LPUtente">
+				<table id="LPUt">
+				<caption>Life Points: 400/400</caption>
+					<tr>
+						<td><div id="PtiVita">
+							
+						</div></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+		
+</div>
+<table id="opzioni">
+		<tr>
+			<td id="Dialogo"></td>
+			<td id="Mosse">
+				<button id="btn1">Mossa 1</button>
+				<button id="btn2">Mossa 2</button><br>
+				<button id="btn3">Mossa 3</button>
+				<button id="btn4">Mossa 4</button>
+			</td>
+		</tr>
+	</table>
+	
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+	
+	window.onload = function(){
+		var dialogo = document.getElementById("Dialogo");
+		var btn1 = document.getElementById("btn1");
+		var btn2 = document.getElementById("btn2");
+		var btn3 = document.getElementById("btn3");
+		var btn4 = document.getElementById("btn4");
+		var htmlParole;
+		var htmlBtn1;
+		var htmlBtn2;
+		var htmlBtn3;
+		var htmlBtn4;
+		var LPUtente = 400;
+		var LPAvversario = 400;
+		var i=200,j=200;
+		var dannoAvv = new Array();
+		var dannoUt = new Array();
+		var utente;
+		
+		//Prendo l'array di tutti i pokemon
+		var poke = JSON.parse(localStorage.getItem("pokemon"));
+		
+		var scrittaDialogBox = document.getElementById("dialogBox");
+		var htmlDB="<form id='sceltaPokemon'><p></p>";
+		
+		for(var i=0;i<20;i++){
+			if(poke[i].possiede == true) {
+				htmlDB += "<img src='../immagini/"+poke[i].nome+".png'></img><input type='radio' name='elenco' value='"+poke[i].nome+"'>"+poke[i].nome+"</input>";
+			}
+		}
+		htmlDB+="</form>";
+		scrittaDialogBox.innerHTML = htmlDB;
+		
+		//DATI POKEMON AVVERSARIO
+		var pokeAvv;  //NOME
+		var indPokeAvv;  //INDICE ARRAY
+		var nomeMosseAvv = new Array();  //MOSSE
+		var trovato = false;
+		while(!trovato){
+			var i = PreparaControattacco(19);
+			if(poke[i].possiede == false) {
+				htmlDB += "<img src='../immagini/"+poke[i].nome+".png'></img><input type='radio' name='elenco' value='"+poke[i].nome+"'>"+poke[i].nome+"</input>";
+				trovato = true;
+				indPokeAvv = i;
+				pokeAvv = poke[i].nome;
+			}
+		}
+		alert("Ecco un "+pokeAvv+" selvatico!");
+		nomeMosseAvv[0] = poke[indPokeAvv].mosse[0]
+		nomeMosseAvv[1] = poke[indPokeAvv].mosse[1]
+		nomeMosseAvv[2] = poke[indPokeAvv].mosse[2]
+		nomeMosseAvv[3] = poke[indPokeAvv].mosse[3]
+		dannoAvv[0]=poke[indPokeAvv].pp[0];
+		dannoAvv[1]=poke[indPokeAvv].pp[1];
+		dannoAvv[2]=poke[indPokeAvv].pp[2];
+		dannoAvv[3]=poke[indPokeAvv].pp[3];
+		var IndPokemon = "../immagini/";
+		IndPokemon += pokeAvv+".png";
+		//APPARIZIONE POKEMON 
+		document.getElementById("Avversario").style.backgroundImage = "url("+IndPokemon+")"
+
+		//DATI POKEMON UTENTE
+		var pokeUt;  //NOME
+		var indPokeUt = "undefined";  //INDICE ARRAY
+		var nomeMosseUt = new Array();  //MOSSE
+
+		//DIALOGO INIZIALE
+		htmlParole = "Cosa vuoi fare?";
+		htmlBtn1 = "Combatti";
+		htmlBtn2 = "Fuggi";
+		htmlBtn3 = "Scegli Pokemon";
+		htmlBtn4 = " ";
+		dialogo.innerHTML = htmlParole;
+		btn1.innerHTML = htmlBtn1;
+		btn2.innerHTML = htmlBtn2;
+		btn3.innerHTML = htmlBtn3;
+		btn4.innerHTML = htmlBtn4;
+		
+		if(indPokeUt == "undefined") btn1.disabled = true;
+		
+		//FUGGI
+		btn2.onclick = function(){
+			window.close();
+		}
+		//Scegli pokemon
+		btn3.onclick = function(){
+			$("#dialogBox").dialog({
+				modal: true,
+				width: "350px",
+				buttons:{
+					"Fatto": function() {
+						indPokeUt = document.getElementById("sceltaPokemon").elenco.value;
+						for(var i=0;i<20;i++){
+							if(indPokeUt == poke[i].nome) indPokeUt = i;
+						}	
+						if(typeof(indPokeUt)=="number"){
+							btn1.disabled = false;
+							$("#dialogBox").dialog( "close" );
+						} 
+					}
+				}
+			});
+			
+		}
+		//COMBATTI
+		btn1.onclick = function(){
+			//ANIMAZIONE
+			utente = document.getElementById("slidePersonaggio");
+			utente._immagine = 0;
+			
+			var persona = new Array();
+			persona[0] = "0px, 0px";
+			persona[1] = "-113px, 0px";
+			persona[2] = "-251px, 0px";
+			persona[3] = "-367px, 0px";
+			persona[4] = "-514px, 0px";
+			persona[5] = "-639px, 0px";
+			var timeOut = setInterval(function(){
+				utente = document.getElementById("slidePersonaggio");
+				utente._immagine += 1 ;
+				if(utente._immagine > 5){
+					utente._immagine=0;
+					pokeUt = document.getElementById("sceltaPokemon").elenco.value;
+					utente.style.width = "450px";
+					utente.style.background = "url(../immagini/"+pokeUt+"b.png) no-repeat";
+					clearInterval(timeOut);
+					azioni();
+				} 
+				
+				utente.style.backgroundPosition = persona[utente._immagine];		//cambio la posizione della figura
+			},50);
+			}
+			
+			//COMBATTIMENTO
+			function combattimento(s){
+				var scelta = s;
+				var mossa;
+				var output;
+				if(LPUtente > 0 && LPAvversario > 0){
+					mossa = PreparaControattacco(3);
+					output="Pokemon nemico usa: "+nomeMosseAvv[mossa];
+					LPUtente = togliLP(LPUtente,dannoAvv[mossa]);
+					output+="<br>Pokemon alleato usa: "+nomeMosseUt[scelta];
+					dialogo.innerHTML=output;
+					LPAvversario = togliLP(LPAvversario,dannoUt[scelta]);
+					aggiornaVita(LPUtente,LPAvversario);
+				}
+				if(LPUtente <= 0) {
+					LPUtente = 0;
+					aggiornaVita(LPUtente,LPAvversario);
+					alert("Il tuo pokemon e' esausto, hai perso!!")
+					LPAvversario = 1;
+					setTimeout(esci,1000);
+				}
+				if(LPAvversario <= 0) {
+					LPAvversario = 0;
+					aggiornaVita(LPUtente,LPAvversario);
+					alert("Il pokemon avversario e' esausto!!")
+					var cattura = confirm("Vuoi catturarlo?");
+					if(cattura) poke[indPokeAvv].possiede = true;
+					setTimeout(esci,1000);
+				}
+			}
+			
+		function aggiornaVita(lputente,lpavversario){
+			var LPUt = document.getElementById("LPUt");
+			var quadratiniU = document.getElementById("PtiVita");
+			var LPAvv = document.getElementById("LPAvv");
+			var quadratiniA = document.getElementById("PtiVitaA");
+			
+			i = lputente / 2;
+			j = lpavversario / 2;
+			
+			LPUt.caption.innerHTML = "Life Points: "+LPUtente+"/400";
+			quadratiniU.style.width = i + "px";
+			 
+			LPAvv.caption.innerHTML = "Life Points: "+LPAvversario+"/400";
+			quadratiniA.style.width = j + "px";
+			
+			
+		}
+		
+		
+		function azioni(){
+			var m;
+			nomeMosseUt[0] = poke[indPokeUt].mosse[0]
+			nomeMosseUt[1] = poke[indPokeUt].mosse[1]
+			nomeMosseUt[2] = poke[indPokeUt].mosse[2]
+			nomeMosseUt[3] = poke[indPokeUt].mosse[3]
+			dannoUt[0]=poke[indPokeUt].pp[0];
+			dannoUt[1]=poke[indPokeUt].pp[1];
+			dannoUt[2]=poke[indPokeUt].pp[2];
+			dannoUt[3]=poke[indPokeUt].pp[3];
+			
+			htmlParole = "Cosa deve fare "+pokeUt+"?";
+			htmlBtn1 = nomeMosseUt[0];
+			htmlBtn2 = nomeMosseUt[1];
+			htmlBtn3 = nomeMosseUt[2];
+			htmlBtn4 = nomeMosseUt[3];
+			
+			dialogo.innerHTML = htmlParole;
+			btn1.innerHTML = htmlBtn1;
+			btn2.innerHTML = htmlBtn2;
+			btn3.innerHTML = htmlBtn3;
+			btn4.innerHTML = htmlBtn4;
+			
+			btn1.onclick = function(){ 
+				m = 0; 
+				combattimento(m);
+				
+			}
+			btn2.onclick= function(){
+				m = 1; 
+				combattimento(m);
+				
+			}
+			btn3.onclick= function(){ 
+				m = 2; 
+				combattimento(m);
+				
+			}
+			btn4.onclick= function(){ 
+				m = 3; 
+				combattimento(m);
+			}
+		}
+		
+		function PreparaControattacco(i){
+			var casuale;
+			
+			casuale = Math.floor(Math.random()*1000)%i+1;
+			
+			return casuale;
+		}
+		
+		function togliLP(LP,mossa){
+			LP-=mossa;
+			return LP;
+		}
+		function esci(){
+			localStorage.setItem("pokemon",JSON.stringify(poke))
+			window.close();
+			
+			
+		}
+		
+	}
+
+
+
+
+	
+</script>
+</body>
+</html>

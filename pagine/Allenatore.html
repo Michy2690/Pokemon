@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dati allenatore</title>
+<style>
+	body{
+		background-color:black;
+	}
+	div#allenatore{
+		width:800px;
+		height:450px;
+		background-color:lightpink;
+		margin: 50px auto;
+		
+	}
+	table#dati{
+		width:700px;
+		height:400px;
+		padding:10px;
+		margin:auto;
+		font-size:15pt;
+	}
+	td{
+		width:100px;
+		height:50px;
+		padding:5px;
+	}
+	img#personaggio{
+		width:200px;
+		height:200px;
+	}
+	#titolo{
+		font-weight:bold;
+		font-size:20pt;
+	}
+	.dato{
+		font-weight:bold;
+		font-size:17pt;
+		color:blue;
+	}
+	div.medaglia{
+		width:30px;
+		height:30px;
+		border:2px solid black;
+		border-radius:10px;
+		text-align:center;
+		color:red;
+	}
+	table#dati td.medaglie{
+		width:30px;
+		height:30px;
+	}
+	td#testo{
+		text-align:center;
+	}
+</style>
+</head>
+<body>
+	<div id="allenatore">
+		<table id="dati">
+			<caption id="titolo">Scheda allenatore pokemon</caption>
+			<tr>
+				<td rowspan="7"><img id="personaggio"><td>Nome<td class="dato" id="nome">
+			<tr>
+				<td>Citta di partenza<td class="dato">Poviglio
+			<tr>
+				<td>Pokemon Iniziale<td id="pokemon" class="dato">
+			<tr>
+				<td colspan="2" id="testo"> Medaglie
+			<tr>
+				
+				<td class="medaglie"><div class="medaglia">1</div>
+				<td class="medaglie"><div class="medaglia">2</div>
+				<td class="medaglie"><div class="medaglia">3</div>
+			<tr>
+				
+				<td class="medaglie"><div class="medaglia">4</div>
+				<td class="medaglie"><div class="medaglia">5</div>
+				<td class="medaglie"><div class="medaglia">6</div>
+			<tr>
+				
+				<td class="medaglie"><div class="medaglia">7</div>
+				<td class="medaglie"><div class="medaglia">8</div>
+				<td class="medaglie"><div class="medaglia">L</div>
+		</table>
+	</div>
+<script>
+	var datiPersonaggio=JSON.parse(localStorage.getItem("datiPersonaggio"));
+	var scelta;
+	document.onkeydown=function(t){
+		gestisciTasto(t.keyCode);
+	
+	}
+	document.getElementById("nome").innerHTML=datiPersonaggio[0];
+	document.getElementById("pokemon").innerHTML=datiPersonaggio[2];
+	if(datiPersonaggio[1]=="Ragazzo")
+		scelta="trainer000";
+	else
+		scelta="trainer001";
+	document.getElementById("personaggio").src="../immagini/"+scelta+".png";
+	function gestisciTasto(tasto){
+		switch(tasto){
+			//premo tasto Z per tornare indietro
+			case 90:
+				location.href="schermataDiGioco.html";
+				break;
+		}
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Start</title>
+<style>
+	body{background-color:black;}
+	div#dati{
+		width:1000px;
+		height:750px;
+		margin:10px auto;
+		display:none;
+	}
+	img#datiImg{
+		width:1000px;
+		height:750px;
+	}
+	div#tasto{
+		width:800px;
+		height:15px;
+		margin:10px auto;
+		display:none;
+	}
+	img#tastoImg{
+		width:800px;
+		height:15px;
+	}
+</style>
+</head>
+<body>
+	<audio autoplay loop>
+		<source src="audio/Title.mp3" type="audio/mpeg">
+	</audio>
+	<div id="dati">
+		<img id="datiImg" src="immagini/dati.png">
+	</div>
+	<div id="tasto">
+		<img id="tastoImg" src="immagini/tasto.png">
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+</script>
+<script>
+	document.onkeydown=function(t){
+		if(t.key=="Enter")
+			location.href="pagine/intro.html";
+	}
+	$(document).ready(function(){
+		$("#dati").slideDown(5000,function(){
+			$("#tasto").show();
+		});
+	});
+</script>
+</body>
+</html>
